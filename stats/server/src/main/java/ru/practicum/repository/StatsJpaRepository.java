@@ -15,13 +15,13 @@ public interface StatsJpaRepository extends JpaRepository<EndpointHit, Integer> 
 
     @Query("""
             SELECT new ru.practicum.dto.ViewStatsDto(
-                h.app, 
-                h.uri, 
+                h.app,
+                h.uri,
                 COUNT(h.ip)
-            ) 
-            FROM EndpointHit h 
-            WHERE h.timestamp BETWEEN :start AND :end 
-            GROUP BY h.uri, h.app 
+            )
+            FROM EndpointHit h
+            WHERE h.timestamp BETWEEN :start AND :end
+            GROUP BY h.uri, h.app
             ORDER BY COUNT(h.id) DESC
             """)
     List<ViewStatsDto> getStatsNotUnique(
@@ -31,13 +31,13 @@ public interface StatsJpaRepository extends JpaRepository<EndpointHit, Integer> 
 
     @Query("""
             SELECT new ru.practicum.dto.ViewStatsDto(
-                h.app, 
-                h.uri, 
+                h.app,
+                h.uri,
                 COUNT(DISTINCT h.ip)
-            ) 
-            FROM EndpointHit h 
-            WHERE h.timestamp BETWEEN :start AND :end 
-            GROUP BY h.uri, h.app 
+            )
+            FROM EndpointHit h
+            WHERE h.timestamp BETWEEN :start AND :end
+            GROUP BY h.uri, h.app
             ORDER BY COUNT(h.id) DESC
             """)
     List<ViewStatsDto> getStatsUnique(
@@ -47,14 +47,14 @@ public interface StatsJpaRepository extends JpaRepository<EndpointHit, Integer> 
 
     @Query("""
             SELECT new ru.practicum.dto.ViewStatsDto(
-                h.app, 
-                h.uri, 
+                h.app,
+                h.uri,
                 COUNT(h.ip)
-            ) 
-            FROM EndpointHit h 
-            WHERE h.uri IN :uris 
-                AND h.timestamp BETWEEN :start AND :end 
-            GROUP BY h.uri, h.app 
+            )
+            FROM EndpointHit h
+            WHERE h.uri IN :uris
+                AND h.timestamp BETWEEN :start AND :end
+            GROUP BY h.uri, h.app
             ORDER BY COUNT(h.id) DESC
             """)
     List<ViewStatsDto> getStatsNotUniqueWithUris(
@@ -65,14 +65,14 @@ public interface StatsJpaRepository extends JpaRepository<EndpointHit, Integer> 
 
     @Query("""
             SELECT new ru.practicum.dto.ViewStatsDto(
-                h.app, 
-                h.uri, 
+                h.app,
+                h.uri,
                 COUNT(DISTINCT h.ip)
-            ) 
-            FROM EndpointHit h 
-            WHERE h.uri IN :uris 
-                AND h.timestamp BETWEEN :start AND :end 
-            GROUP BY h.uri, h.app 
+            )
+            FROM EndpointHit h
+            WHERE h.uri IN :uris
+                AND h.timestamp BETWEEN :start AND :end
+            GROUP BY h.uri, h.app
             ORDER BY COUNT(h.id) DESC
             """)
     List<ViewStatsDto> getStatsUniqueWithUris(
