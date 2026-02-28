@@ -14,7 +14,6 @@ import ru.practicum.service.StatsService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
 public class StatsController {
