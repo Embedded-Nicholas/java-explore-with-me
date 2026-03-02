@@ -1,7 +1,9 @@
-package ru.practicum.dto;
+package ru.practicum.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import ru.practicum.dto.EndpointHit;
+import ru.practicum.dto.EndpointHitDto;
 
 @Mapper(componentModel = "spring")
 public interface EndpointHitMapper {
@@ -12,3 +14,4 @@ public interface EndpointHitMapper {
 
     EndpointHit toHit(EndpointHitDto hitDto);
 }
+

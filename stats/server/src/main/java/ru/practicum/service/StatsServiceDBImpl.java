@@ -3,9 +3,9 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHitDto;
-import ru.practicum.dto.EndpointHitMapper;
 import ru.practicum.dto.RequestParamDto;
 import ru.practicum.dto.ViewStatsDto;
+import ru.practicum.mapper.EndpointHitMapper;
 import ru.practicum.repository.StatsJpaRepository;
 
 import java.net.URLDecoder;
