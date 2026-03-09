@@ -26,7 +26,9 @@ public class SearchEventParams {
     private Boolean onlyAvailable = false;
     private String sort;
     @PositiveOrZero
+    @Builder.Default
     private Integer from = 0;
     @Positive
+    @Builder.Default
     private Integer size = 10;
 }
