@@ -12,14 +12,10 @@ import ru.practicum.StatsClient;
 public class StatsClientConfig {
 
     @Bean
-    public RestTemplateBuilder restTemplateBuilder() {
-        return new RestTemplateBuilder();
-    }
-
-    @Bean
-    public RestTemplate statsRestTemplate(@Value("${stat-server.url}") String baseUrl,
-                                          RestTemplateBuilder builder) {
-        return builder.uriTemplateHandler(new DefaultUriBuilderFactory(baseUrl)).build();
+    public RestTemplate statsRestTemplate(@Value("${stat-server.url}") String baseUrl) {
+        return new RestTemplateBuilder()
+                .uriTemplateHandler(new DefaultUriBuilderFactory(baseUrl))
+                .build();
     }
 
     @Bean
