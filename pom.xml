@@ -84,9 +84,7 @@
                         <effort>Max</effort>
                         <threshold>High</threshold>
                         <!-- Добавляем параметр для Java 21 -->
-                        <jvmArgs>
-                            <jvmArg>-Djava.version=21</jvmArg>
-                        </jvmArgs>
+                        <jvmArg>-Djava.version=21</jvmArg>
                     </configuration>
                     <executions>
                         <execution>
