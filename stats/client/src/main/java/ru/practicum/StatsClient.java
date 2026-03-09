@@ -1,132 +1,46 @@
 package ru.practicum;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-import ru.practicum.dto.EndpointHitDto;
-import ru.practicum.dto.ViewStatsDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import ru.practicum.dto.EndpointHit;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
 
-@Component
-@RequiredArgsConstructor
-public class StatsClient {
-    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final @Qualifier("statsRestTemplate") RestTemplate rest;
+@Service
+public class StatsClient extends BaseClient {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public List<ViewStatsDto> getStats(LocalDateTime startTime, LocalDateTime endTime,
-                                       @Nullable String[] uris, @Nullable Boolean unique) {
-        String startEncoded = encodeDateTime(startTime);
-        String endEncoded = encodeDateTime(endTime);
-
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromPath("/stats")
-                .queryParam("start", startEncoded)
-                .queryParam("end", endEncoded);
-
-        if (uris != null) {
-            uriBuilder.queryParam("uris", (Object[]) uris);
-        }
-        if (unique != null) {
-            uriBuilder.queryParam("unique", unique);
-        }
-
-        return makeAndSendGetStatsRequest(uriBuilder.build().toString(), null);
-    }
-
-    public ResponseEntity<String> postHit(EndpointHitDto hit) {
-        return makeAndSendPostHitRequest("/hit", hit);
-    }
-
-    public Map<Integer, Long> getMapIdViews(Collection<Integer> eventsId, LocalDateTime startTime, LocalDateTime endTime) {
-        if (eventsId == null || eventsId.isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        String[] uriArray = eventsId.stream()
-                .map(id -> "/events/" + id)
-                .toArray(String[]::new);
-
-        List<ViewStatsDto> endpointStatsList = getStats(
-                startTime,
-                endTime,
-                uriArray,
-                true
+    @Autowired
+    public StatsClient(
+            @Value("${stat-server.url}") String serverUrl,
+            RestTemplateBuilder builder) {
+        super(
+                builder
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
+                        .build()
         );
-
-        if (endpointStatsList == null || endpointStatsList.isEmpty()) {
-            return eventsId.stream()
-                    .collect(Collectors.toMap(id -> id, id -> 0L));
-        }
-
-        return endpointStatsList.stream()
-                .collect(Collectors.toMap(
-                        StatsClient::extractIdFromUri,
-                        ViewStatsDto::hits,
-                        (v1, v2) -> v1
-                ));
     }
 
-    private static String encodeDateTime(LocalDateTime dateTime) {
-        return URLEncoder.encode(dateTime.format(TIME_FORMAT), StandardCharsets.UTF_8);
+    public void postStats(EndpointHit endpointHitDto) {
+        post(endpointHitDto);
     }
 
-    private static Integer extractIdFromUri(ViewStatsDto stats) {
-        String[] splitUri = stats.uri().split("/");
-        return Integer.valueOf(splitUri[splitUri.length - 1]);
-    }
-
-    private List<ViewStatsDto> makeAndSendGetStatsRequest(String path, @Nullable Map<String, Object> parameters) {
-        HttpEntity<Void> requestEntity = new HttpEntity<>(defaultHeaders());
-
-        try {
-            ResponseEntity<List<ViewStatsDto>> response;
-            if (parameters != null) {
-                response = rest.exchange(
-                        path,
-                        HttpMethod.GET,
-                        requestEntity,
-                        new ParameterizedTypeReference<List<ViewStatsDto>>() {},
-                        parameters
-                );
-            } else {
-                response = rest.exchange(
-                        path,
-                        HttpMethod.GET,
-                        requestEntity,
-                        new ParameterizedTypeReference<List<ViewStatsDto>>() {}
-                );
-            }
-            return response.getBody();
-        } catch (HttpStatusCodeException e) {
-            return null;
-        }
-    }
-
-    private ResponseEntity<String> makeAndSendPostHitRequest(String path, EndpointHitDto hit) {
-        HttpEntity<EndpointHitDto> requestEntity = new HttpEntity<>(hit, defaultHeaders());
-
-        try {
-            return rest.exchange(path, HttpMethod.POST, requestEntity, String.class);
-        } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
-        }
-    }
-
-    private static HttpHeaders defaultHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        return headers;
+    public ResponseEntity<Object> getStats(LocalDateTime start, LocalDateTime end, List<String> uris,
+                                           Boolean unique) {
+        Map<String, Object> parameters = Map.of(
+                "start", start.format(formatter),
+                "end", end.format(formatter),
+                "uris", String.join(",", uris),
+                "unique", unique
+        );
+        return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
 }
