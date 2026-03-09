@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -7,7 +8,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <name>Explore With Me</name>
@@ -24,6 +25,17 @@
     <properties>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+
+
+        <checkstyle.version>3.1.2</checkstyle.version>
+        <checkstyle.tool.version>10.3</checkstyle.tool.version>
+        <spotbugs.version>4.8.6</spotbugs.version>
+        <jacoco.version>0.8.8</jacoco.version>
+
+
+        <hibernate.version>6.5.2.Final</hibernate.version>
     </properties>
 
     <build>
@@ -41,7 +53,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>${checkstyle.version}</version>
                     <configuration>
                         <configLocation>checkstyle.xml</configLocation>
                         <failOnViolation>true</failOnViolation>
@@ -60,17 +72,21 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.3</version>
+                            <version>${checkstyle.tool.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>4.7.0.0</version>
+                    <version>${spotbugs.version}</version>  <!-- Используем переменную -->
                     <configuration>
                         <effort>Max</effort>
                         <threshold>High</threshold>
+                        <!-- Добавляем параметр для Java 21 -->
+                        <jvmArgs>
+                            <jvmArg>-Djava.version=21</jvmArg>
+                        </jvmArgs>
                     </configuration>
                     <executions>
                         <execution>
@@ -79,11 +95,12 @@
                             </goals>
                         </execution>
                     </executions>
+                    <!-- ВАЖНО: Никакой секции dependencies здесь нет! -->
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.8</version>
+                    <version>${jacoco.version}</version>
                     <configuration>
                         <output>file</output>
                     </configuration>
@@ -151,6 +168,7 @@
             </plugins>
         </pluginManagement>
     </build>
+
     <profiles>
         <profile>
             <id>check</id>
@@ -187,14 +205,14 @@
             </build>
         </profile>
     </profiles>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.orm</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>5.6.15.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
         </dependencies>
-
     </dependencyManagement>
 </project>
