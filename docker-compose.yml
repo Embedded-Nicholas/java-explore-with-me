@@ -29,7 +29,7 @@ services:
       start_period: 5s
 
   ewm-service:
-    build: ./main-server
+    build: ./main-service
     container_name: ewm_main_server
     ports:
       - "8080:8080"
