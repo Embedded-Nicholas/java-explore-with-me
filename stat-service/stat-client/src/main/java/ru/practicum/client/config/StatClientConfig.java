@@ -8,7 +8,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class StatClientConfig {
 
-    @Value("${client.url}")
+    @Value("http://ewm_stat_server:9090")
     private String statServerUrl;
 
     @Bean
