@@ -2,6 +2,7 @@ package ru.practicum.ewm.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +31,6 @@ import ru.practicum.ewm.model.mappers.RequestMapper;
 import ru.practicum.ewm.repository.*;
 import ru.practicum.ewm.service.EventService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;

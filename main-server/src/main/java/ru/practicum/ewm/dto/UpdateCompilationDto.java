@@ -1,8 +1,8 @@
 package ru.practicum.ewm.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import jakarta.validation.constraints.Size;
 import java.util.Set;
 
 @Getter

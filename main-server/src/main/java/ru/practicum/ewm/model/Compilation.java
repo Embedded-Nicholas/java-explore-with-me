@@ -1,8 +1,8 @@
 package ru.practicum.ewm.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.*;
 import java.util.Set;
 
 @Getter

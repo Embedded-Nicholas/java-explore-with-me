@@ -1,5 +1,8 @@
 package ru.practicum.ewm.controller.pub;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -12,9 +15,6 @@ import ru.practicum.ewm.dto.EventShortDto;
 import ru.practicum.ewm.dto.SearchEventParams;
 import ru.practicum.ewm.service.EventService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import java.util.List;
 
 @RestController

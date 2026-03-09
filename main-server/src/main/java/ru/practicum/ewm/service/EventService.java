@@ -1,8 +1,8 @@
 package ru.practicum.ewm.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import ru.practicum.ewm.dto.*;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventService {
