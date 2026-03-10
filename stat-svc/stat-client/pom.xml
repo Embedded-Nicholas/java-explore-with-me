@@ -5,11 +5,11 @@
 <modelVersion>4.0.0</modelVersion>
 <parent>
     <groupId>ru.practicum</groupId>
-    <artifactId>stats</artifactId>
+    <artifactId>stat-svc</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 </parent>
 
-<artifactId>client</artifactId>
+<artifactId>stat-client</artifactId>
 <packaging>jar</packaging>
 
 <properties>
@@ -21,7 +21,7 @@
 <dependencies>
     <dependency>
         <groupId>ru.practicum</groupId>
-        <artifactId>dto</artifactId>
+        <artifactId>stat-dto</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <scope>compile</scope>
     </dependency>

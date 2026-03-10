@@ -9,12 +9,15 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>stats</artifactId>
+    <artifactId>stat-svc</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+
     <modules>
-        <module>server</module>
-        <module>client</module>
-        <module>dto</module>
+        <module>stat-dto</module>
+        <module>stat-client</module>
+        <module>stat-server</module>
     </modules>
 
     <properties>
@@ -29,4 +32,5 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
+
 </project>
