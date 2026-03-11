@@ -282,12 +282,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("Событие с ID = " + eventId + " не опубликовано");
         }
 
-        String eventUri = "/events/" + eventId;
-        try {
-            statClient.createHit(eventUri, request.getRemoteAddr());
-        } catch (Exception exception) {
-            log.error("Ошибка при отправке статистики: {}", exception.getMessage());
-        }
+        sendStats(request);
 
         Long views = getViewsForSingleEvent(eventId, event.getCreatedOn());
 
@@ -419,7 +414,8 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
 
         LocalDateTime earliestCreatedOn = events.stream()
-                .map(Event::getCreatedOn)
+                .map(Event::getPublishedOn)
+                .filter(Objects::nonNull)
                 .min(LocalDateTime::compareTo)
                 .orElse(LocalDateTime.now().minusYears(1));
 
