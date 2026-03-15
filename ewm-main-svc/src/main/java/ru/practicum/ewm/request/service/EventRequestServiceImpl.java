@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EventRequestServiceImpl implements EventRequestService {
 
@@ -39,7 +40,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     EventRequestRepository eventRequestRepository;
 
     @Override
-    @Transactional
     public ParticipationRequestDto create(Long userId, Long eventId) {
         log.info("Создание запроса на участие: userId = {}, eventId = {}", userId, eventId);
 
@@ -82,7 +82,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
-    @Transactional
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         log.info("Отмена запроса на участие: userId = {}, requestId = {}", userId, requestId);
 
@@ -102,7 +101,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getParticipationRequests(Long userId) {
         log.info("Получение запросов пользователя: userId = {}", userId);
 
@@ -115,7 +113,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ParticipationRequestDto> getParticipationRequestsForUserEvent(Long userId, Long eventId) {
         log.info("Получение заявок на своё событие: userId = {}, eventId = {}", userId, eventId);
 
@@ -131,7 +128,6 @@ public class EventRequestServiceImpl implements EventRequestService {
     }
 
     @Override
-    @Transactional
     public EventRequestStatusUpdateResult updateStatus(Long userId, Long eventId,
                                                        EventRequestStatusUpdateRequest dto) {
         log.info("Изменение статуса заявок: userId = {}, eventId = {}, status = {}", userId, eventId, dto.getStatus());
