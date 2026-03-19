@@ -45,7 +45,6 @@ import jakarta.persistence.criteria.Predicate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EventServiceImpl implements EventService {
 
@@ -61,6 +60,7 @@ public class EventServiceImpl implements EventService {
     StatisticsClient statClient;
     ObjectMapper mapper;
 
+    @Transactional
     @Override
     public EventFullDto create(Long userId, NewEventDto newEventDto) {
         validateEventDate(newEventDto.getEventDate());
@@ -84,6 +84,7 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(eventSaved);
     }
 
+    @Transactional
     @Override
     public EventFullDto updateEventByAdmin(Long eventId, UpdateEventAdminRequest adminRequest) {
         Event event = getEventById(eventId);
@@ -103,6 +104,7 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(updatedEvent);
     }
 
+    @Transactional
     @Override
     public EventFullDto updateEventByPrivate(Long userId, Long eventId, UpdateEventUserRequest eventUserRequest) {
         User user = getUserById(userId);
@@ -140,6 +142,7 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(event);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<EventShortDto> findAllByPublic(EventSearchParams params, HttpServletRequest request) {
 
@@ -215,6 +218,7 @@ public class EventServiceImpl implements EventService {
         return eventShortDtos;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<EventShortDto> findAllByPrivate(Long userId, Integer from, Integer size, HttpServletRequest request) {
         User user = getUserById(userId);
@@ -237,6 +241,7 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<EventFullDto> findAllByAdmin(EventSearchParams params, HttpServletRequest request) {
         Pageable pageable = PageRequest.of(params.getFrom(), params.getSize());
@@ -263,6 +268,7 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
     }
 
+
     private Map<Long, Long> getConfirmedRequestsForEvents(List<Long> eventIds) {
         List<Object[]> results = eventRequestRepository.countByEventIdInAndStatus(eventIds, RequestStatus.CONFIRMED);
         Map<Long, Long> confirmedRequestsMap = new HashMap<>();
@@ -274,6 +280,7 @@ public class EventServiceImpl implements EventService {
         return confirmedRequestsMap;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EventFullDto findEventById(Long eventId, HttpServletRequest request) {
         Event event = getEventById(eventId);

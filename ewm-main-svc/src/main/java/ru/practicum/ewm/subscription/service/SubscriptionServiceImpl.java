@@ -58,25 +58,26 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public void unsubscribe(Long userId, Long ownerId) {
         User follower = findUser(userId);
         User owner = findUser(ownerId);
+
         log.info("Обработка запроса на отмену подписки от пользователя {} к пользователю {}", userId, ownerId);
 
-        Optional<Subscription> subscription = subscriptionRepository
-                .findByFollowerAndOwner(follower, owner);
-        if (subscription.isEmpty()) {
+        int deleted = subscriptionRepository.deleteByFollowerAndOwner(follower, owner);
+
+        if (deleted == 0) {
             log.warn("У пользователя {} нет подписки на пользователя {}", userId, ownerId);
             throw new ConflictException("У пользователя нет подписки на пользователя");
         }
-        Optional<Subscription> reverseSubscription = subscriptionRepository
-                .findByFollowerAndOwner(owner, follower);
-        if (reverseSubscription.isPresent() &&
-                reverseSubscription.get().getFriendshipsStatus().equals(FriendshipsStatus.MUTUAL)) {
-            reverseSubscription.get().setFriendshipsStatus(FriendshipsStatus.ONE_SIDED);
-            reverseSubscription.get().setUnsubscribeTime(LocalDateTime.now());
-            subscriptionRepository.save(reverseSubscription.get());
-        }
-        subscriptionRepository.delete(subscription.get());
-        log.info("Пользователь {} успешно отписался от {}. Статус дружбы обновлен: {}",
-                userId, ownerId, reverseSubscription.map(Subscription::getFriendshipsStatus).orElse(null));
+
+        int updated = subscriptionRepository.updateReverseSubscription(
+                owner,
+                follower,
+                FriendshipsStatus.MUTUAL,
+                FriendshipsStatus.ONE_SIDED,
+                LocalDateTime.now()
+        );
+
+        log.info("Пользователь {} успешно отписался от {}. Обновлено обратных подписок: {}",
+                userId, ownerId, updated);
     }
 
     @Override
