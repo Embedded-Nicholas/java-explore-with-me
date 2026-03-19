@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import ru.practicum.ewm.enums.FriendshipsStatus;
 import ru.practicum.ewm.subscription.model.Subscription;
 import ru.practicum.ewm.user.model.User;
